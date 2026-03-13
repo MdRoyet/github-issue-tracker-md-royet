@@ -108,3 +108,54 @@ function renderIssues(issues) {
     });
 }
 
+/**
+ * 4. MODAL DETAIL VIEW
+ */
+async function showModal(id) {
+    toggleLoader(true);
+    try {
+        const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`);
+        const json = await res.json();
+        const issue = json.data;
+        const date = new Date(issue.createdAt).toLocaleDateString('en-GB');
+
+        modalBody.innerHTML = `
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-extrabold text-slate-900 pr-8">${issue.title}</h2>
+                <button onclick="closeModalWindow()" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+            </div>
+            
+            <div class="flex items-center gap-3 text-sm text-slate-500 mb-6">
+                <span class="bg-open text-white px-3 py-1 rounded-full font-bold text-xs capitalize">${issue.status}</span>
+                <span>• Opened by <b class="text-slate-700">${issue.author}</b> • ${date}</span>
+            </div>
+
+            <p class="text-slate-600 leading-relaxed mb-8 border-l-4 border-slate-100 pl-4 italic">
+                "${issue.description}"
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl mb-8">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Assignee</label>
+                    <span class="font-bold text-slate-800">${issue.author}</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Priority</label>
+                    <span class="bg-rose-500 text-white px-3 py-0.5 rounded text-xs font-black uppercase">${issue.priority}</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="closeModalWindow()" class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-opacity-90 transition">
+                    Done
+                </button>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+    } catch (err) {
+        console.error(err);
+    } finally {
+        toggleLoader(false);
+    }
+}
+
