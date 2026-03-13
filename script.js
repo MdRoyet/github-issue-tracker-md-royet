@@ -159,3 +159,53 @@ async function showModal(id) {
     }
 }
 
+
+/**
+ * 5. UTILITIES & EVENT LISTENERS
+ */
+function closeModalWindow() { modal.classList.add('hidden'); }
+
+function toggleLoader(show) {
+    show ? loader.classList.remove('hidden') : loader.classList.add('hidden');
+}
+
+function getPriorityStyles(p) {
+    const priority = p.toLowerCase();
+    if (priority === 'high') return 'bg-rose-100 text-rose-600';
+    if (priority === 'medium') return 'bg-amber-100 text-amber-600';
+    return 'bg-slate-100 text-slate-500';
+}
+
+// Search Functionality
+searchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+        const query = searchInput.value.trim();
+        if (!query) return fetchIssues();
+        
+        toggleLoader(true);
+        try {
+            const res = await fetch(`${SEARCH_URL}${query}`);
+            const json = await res.json();
+            renderIssues(json.data);
+        } finally {
+            toggleLoader(false);
+        }
+    }
+});
+
+// Tab Filtering
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // UI Update
+        tabBtns.forEach(b => b.classList.remove('bg-primary', 'text-white'));
+        tabBtns.forEach(b => b.classList.add('text-slate-500'));
+        btn.classList.add('bg-primary', 'text-white');
+        btn.classList.remove('text-slate-500');
+
+        // Filter Logic
+        const filter = btn.dataset.filter;
+        const filtered = filter === 'all' ? allIssues : allIssues.filter(i => i.status === filter);
+        renderIssues(filtered);
+    });
+});
+
