@@ -40,3 +40,20 @@ loginForm.addEventListener('submit', (e) => {
     }
 });
 
+/**
+ * 2. DATA FETCHING
+ */
+async function fetchIssues() {
+    toggleLoader(true);
+    try {
+        const res = await fetch(API_URL);
+        const json = await res.json();
+        allIssues = json.data;
+        renderIssues(allIssues);
+    } catch (err) {
+        console.error("Fetch Error:", err);
+    } finally {
+        toggleLoader(false);
+    }
+}
+
