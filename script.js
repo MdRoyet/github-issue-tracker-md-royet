@@ -214,19 +214,19 @@ tabBtns.forEach(btn => {
 // Tab Filtering Logic
 tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        // 1. Remove active styles from ALL buttons
+        // 1. Reset all buttons to default state
         tabBtns.forEach(b => {
-            // Remove the primary active background and white text
             b.classList.remove('bg-primary', 'text-white');
-            // Reset to the default gray text
             b.classList.add('text-slate-500');
         });
 
-        // 2. Add active styles to the CLICKED button
+        // 2. Set the clicked button to Active state
         btn.classList.add('bg-primary', 'text-white');
         btn.classList.remove('text-slate-500');
 
-        // Logic for filtering data
+        // Note: The 'hover:text-black' class in HTML handles the cursor effect 
+        // for the non-active tabs automatically.
+
         const filter = btn.dataset.filter;
         const filtered = filter === 'all' ? allIssues : allIssues.filter(i => i.status === filter);
         renderIssues(filtered);
