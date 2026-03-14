@@ -209,3 +209,26 @@ tabBtns.forEach(btn => {
     });
 });
 
+
+
+// Tab Filtering Logic
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // 1. Remove active styles from ALL buttons
+        tabBtns.forEach(b => {
+            // Remove the primary active background and white text
+            b.classList.remove('bg-primary', 'text-white');
+            // Reset to the default gray text
+            b.classList.add('text-slate-500');
+        });
+
+        // 2. Add active styles to the CLICKED button
+        btn.classList.add('bg-primary', 'text-white');
+        btn.classList.remove('text-slate-500');
+
+        // Logic for filtering data
+        const filter = btn.dataset.filter;
+        const filtered = filter === 'all' ? allIssues : allIssues.filter(i => i.status === filter);
+        renderIssues(filtered);
+    });
+});
